@@ -1,0 +1,23 @@
+Session: 2026-01-29 12:11
+Feature: 20260129-run-sh
+Input: CR-20260129-1210
+Decisions: D-20260129-1211
+Spec: docs/specs/20260129-run-sh/spec.md
+Tasks: docs/specs/20260129-run-sh/tasks.md
+Goal: Add `run.sh` and document it in README.
+
+DONE
+- [2026-01-29 12:11] Initialize RALPH traceability docs.
+- [2026-01-29 12:12] T-001: Add `run.sh` helper for venv + run. (Implements: FR-001)
+- [2026-01-29 12:13] T-002: Document `./run.sh` in `README.md`. (Implements: FR-002)
+
+IN PROGRESS
+- (none)
+
+NEXT
+- (none)
+
+NOTES
+- Commands run: `bash -n run.sh` -> ok; `./run.sh -h` -> prints usage; `python3 -m compileall .` -> ok; `./run.sh mod3_cust_journey/recreated_Customer Journey Map Template.pptx /tmp/pptx_out.1azc8z --extract` -> created JSON
+- Risks / open questions:
+  - `python3` version may vary by machine; script should auto-select an available interpreter.

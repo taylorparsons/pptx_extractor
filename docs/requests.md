@@ -53,3 +53,13 @@ use the latest version of $ralph to help
 
 Notes:
 - Interpreted as: a local web UI that can run extract/recreate, let the user filter what gets recreated (e.g., slides/shape types), and validate edited JSON with clear errors.
+
+## CR-20260130-1433
+Date: 2026-01-30 14:33
+Source: chat
+
+Request (verbatim):
+going forward include the skills used
+
+Notes:
+- Applies to RALPH session logging (`docs/progress.txt`) and task lines with `Skills:` tags.

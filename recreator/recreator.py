@@ -21,6 +21,16 @@ class Recreator:
             PictureShapeRecreator()
         ]
 
+    def _is_diagram_shape(self, shape):
+        try:
+            relids = shape._element.xpath('.//*[local-name()="relIds"]')
+        except Exception:
+            return False
+        if not relids:
+            return False
+        dm = relids[0].get("{http://schemas.openxmlformats.org/officeDocument/2006/relationships}dm")
+        return bool(dm)
+
     def _parse_slide_info(self, slide_info):
         presentation = {}
         slides = slide_info
@@ -61,6 +71,8 @@ class Recreator:
                 continue
             if shape_type == "table" and not getattr(shape, "has_table", False):
                 continue
+            if shape_type == "diagram" and not self._is_diagram_shape(shape):
+                continue
             if shape_type == "picture":
                 try:
                     if shape.shape_type != MSO_SHAPE_TYPE.PICTURE:
@@ -94,6 +106,11 @@ class Recreator:
         if template_path and os.path.isfile(template_path) and template_path.lower().endswith(".pptx"):
             prs = Presentation(template_path)
             template_slides = list(prs.slides)
+            diagram_recreator = None
+            for r in self.recreators:
+                if isinstance(r, DiagramShapeRecreator):
+                    diagram_recreator = r
+                    break
             for slide_index, slide_data in enumerate(slides):
                 if slide_index < len(template_slides):
                     slide = template_slides[slide_index]
@@ -103,7 +120,14 @@ class Recreator:
                 shapes_data = sorted(slide_data.get("shapes") or [], key=lambda x: x.get("z_order", 0))
                 for shape_data in shapes_data:
                     if shape_data.get("type") == "diagram":
-                        # Template PPTX already contains SmartArt; avoid duplicating it with text placeholders.
+                        # In template mode, edit the existing SmartArt text in-place (best-effort).
+                        if diagram_recreator is not None:
+                            existing = self._best_match_shape(slide, shape_data)
+                            if existing is not None:
+                                try:
+                                    diagram_recreator.apply_to_shape(existing, shape_data)
+                                except Exception:
+                                    pass
                         continue
                     for recreator in self.recreators:
                         if not recreator.can_recreate(shape_data):

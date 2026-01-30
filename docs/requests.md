@@ -42,3 +42,13 @@ yes update the ralphdocs to we are all matched up and decisions are logged
 
 Notes:
 - The “missing slide 1-8” report refers to verifying the extracted JSON contains a complete, ordered slide list for the REI deck.
+
+## CR-20260130-1433
+Date: 2026-01-30 14:33
+Source: chat
+
+Request (verbatim):
+going forward include the skills used
+
+Notes:
+- Applies to RALPH session logging (`docs/progress.txt`) and task lines with `Skills:` tags.

@@ -54,3 +54,29 @@ NOTES
   - `audit_repository_security.py --quick` -> ok (0 findings)
 - Risks / open questions:
   - Secret scanners run with `--all` can flag false positives in `.venv/` and ignored `*_info.json`; use `--staged` for commit gating.
+
+---
+
+Session: 2026-01-30 14:33
+Agent: Codex CLI
+Model: GPT-5.2
+Skills: ralph
+Feature: 20260130-cli-and-fidelity
+Input: CR-20260130-1433
+Decisions: (none)
+Spec: docs/specs/20260130-cli-and-fidelity/spec.md
+Tasks: docs/specs/20260130-cli-and-fidelity/tasks.md
+Goal: Start recording skills used in RALPH progress logs.
+
+DONE
+- [2026-01-30 14:33] Added skills-used logging in progress entries going forward. (Skills: ralph)
+
+IN PROGRESS
+- (none)
+
+NEXT
+- (none)
+
+NOTES
+- Commands run: (none)
+- Commit: cb9e674

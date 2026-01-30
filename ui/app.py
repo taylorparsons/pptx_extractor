@@ -96,6 +96,18 @@ def _preset_dirs() -> list[tuple[str, str]]:
     ]
 
 
+def _output_dir_from_info_path(info_path: str) -> str:
+    try:
+        p = Path(info_path).expanduser()
+        if p.is_dir():
+            base = p
+        else:
+            base = p.parent
+        return str((base / "output").resolve())
+    except Exception:
+        return _default_output_dir()
+
+
 def _load_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
@@ -286,6 +298,7 @@ with tabs[1]:
         try:
             saved = _save_uploaded_file(uploaded_json, Path("output/uploads").resolve())
             st.session_state["last_info_path"] = str(saved)
+            st.session_state["output_dir"] = _output_dir_from_info_path(str(saved))
             info_path = str(saved)
             st.info(f"Uploaded JSON saved to: {saved}")
         except Exception as e:
@@ -311,6 +324,7 @@ with tabs[1]:
                 st.session_state["loaded_json_path"] = str(info_file)
                 st.session_state["last_info_path"] = str(info_file)
                 st.session_state["recreate_info_path"] = str(info_file)
+                st.session_state["output_dir"] = _output_dir_from_info_path(str(info_file))
                 st.success("Loaded JSON.")
                 st.json(_json_summary(data))
             except Exception as e:
@@ -327,6 +341,7 @@ with tabs[1]:
                     st.success("OK: JSON matches expected schema (v2) enough to recreate.")
                     st.session_state["last_info_path"] = str(info_file)
                     st.session_state["recreate_info_path"] = str(info_file)
+                    st.session_state["output_dir"] = _output_dir_from_info_path(str(info_file))
                 else:
                     st.error(f"Found {len(errors)} issue(s).")
                     st.code("\n".join(str(e) for e in errors))
@@ -456,6 +471,7 @@ with tabs[2]:
             saved = _save_uploaded_file(uploaded_info, Path("output/uploads").resolve())
             st.session_state["last_info_path"] = str(saved)
             info_path = str(saved)
+            st.session_state["output_dir"] = _output_dir_from_info_path(str(saved))
             st.info(f"Uploaded JSON saved to: {saved}")
         except Exception as e:
             st.exception(e)

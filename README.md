@@ -45,6 +45,14 @@ python3 -m compileall main.py extractors recreator utils
 bash -n run.sh
 ```
 
+### Validate edited JSON before recreating
+
+If you hand-edit a `*_info.json`, validate it before running `--recreate`:
+
+```sh
+./run.sh validate /path/to/some_info.json
+```
+
 ### End-to-end (extract + recreate)
 
 ```sh

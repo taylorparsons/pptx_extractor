@@ -33,6 +33,9 @@ python -m pip install -r requirements.txt
 
 if [[ $# -eq 0 ]]; then
   python main.py -h
+elif [[ "${1:-}" == "validate" || "${1:-}" == "validate-json" ]]; then
+  shift
+  python -m utils.validate_info_json "$@"
 else
   # Validate --info-path if provided (common footgun: accidental line breaks).
   info_path=""

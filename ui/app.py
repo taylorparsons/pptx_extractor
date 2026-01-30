@@ -190,27 +190,6 @@ def _run_recreate(pptx_path: str, output_dir: str, info_path: str, output_pptx: 
 
 st.set_page_config(page_title="pptx_extractor UI", layout="wide", page_icon=_load_page_icon())
 
-assets_dir = (Path(__file__).resolve().parent.parent / "assets").resolve()
-banner_path = assets_dir / "readme-banner.svg"
-side_path = assets_dir / "ui-side-illustration.svg"
-
-banner_uri = _svg_data_uri(banner_path) if banner_path.exists() else None
-side_uri = _svg_data_uri(side_path) if side_path.exists() else None
-if banner_uri and side_uri:
-    st.markdown(
-        f"""
-<div style="display:flex; gap: 16px; align-items: stretch; flex-wrap: wrap;">
-  <div style="flex: 3; min-width: 520px; border-radius: 14px; overflow:hidden;">
-    <img alt="pptx_extractor banner" src="{banner_uri}" style="width: 100%; height: auto; display:block;" />
-  </div>
-  <div style="flex: 1; min-width: 320px; border-radius: 14px; overflow:hidden;">
-    <img alt="pptx_extractor illustration" src="{side_uri}" style="width: 100%; height: auto; display:block;" />
-  </div>
-</div>
-""",
-        unsafe_allow_html=True,
-    )
-
 st.title("pptx_extractor — Web UI")
 st.caption("Run extract/recreate, filter JSON, and validate edits before recreating.")
 

@@ -31,6 +31,36 @@ python -m pip install -r requirements.txt
 python main.py -h
 ```
 
+## Testing / Validation
+
+This repo doesn’t currently have unit tests. Use these sanity checks instead:
+
+### Quick sanity checks
+
+```sh
+# Syntax check all python modules in the repo
+python3 -m compileall main.py extractors recreator utils
+
+# Shellcheck equivalent (syntax only) for the wrapper script
+bash -n run.sh
+```
+
+### End-to-end (extract + recreate)
+
+```sh
+# Extract to a throwaway directory
+./run.sh path/to/presentation.pptx /tmp/pptx_extract_out --extract
+
+# Recreate from the extracted JSON (template-based if the PPTX exists)
+./run.sh path/to/presentation.pptx /tmp/pptx_extract_out --recreate
+```
+
+If you moved/renamed the extracted JSON, recreate using `--info-path`:
+
+```sh
+./run.sh path/to/presentation.pptx /tmp/pptx_extract_out --recreate --info-path /path/to/some_info.json
+```
+
 ## Usage
 
 The PPTX Utility Tool provides two main functionalities: extracting presentation information and recreating the PPTX file.

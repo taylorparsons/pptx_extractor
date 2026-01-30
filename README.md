@@ -2,6 +2,8 @@
 
 # PPTX Utility Tool
 
+Extract PPTX → JSON, edit safely, and recreate a styled deck (with SmartArt text support).
+
 The PPTX Utility Tool is a Python project that allows you to extract presentation information from a PowerPoint file (PPTX) and recreate the PPTX file using the extracted information. This tool can be useful for analyzing and manipulating PowerPoint presentations programmatically.
 
 ## Why this exists (value)

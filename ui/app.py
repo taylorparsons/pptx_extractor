@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import base64
+import io
 import json
 import os
 from collections import Counter
@@ -11,6 +13,36 @@ import streamlit as st
 from extractors.extractor import Extractor
 from recreator.recreator import Recreator
 from utils.info_json_validator import validate_info_json
+
+
+_FAVICON_PNG_BASE64 = (
+    "iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAACCklEQVR4nO2bu0rEQBSGz/zEym6x"
+    "0EZsBMFmsbO32IcQ0m63jY+hhZ3YSMDHsNZOthEEOxst9g0sVhYZWNZcZpIzmTM5+zULuUzm/3KS"
+    "TLKJ2R0dLUkxIOWAlANSDkg5IOVknI3tH55RX3x/vrK0Y7peBvsMHUKGaSugLPji6536Yu/ghEWEa"
+    "SNgPXyfoV1k+EowPgKkBecQgaGE3+yX67kJXTYiEd/+wWUha1N6eIvtp0sVYGjhfSWAlIMh7n2fKg"
+    "ApJwvZeD5/q5xXjE9JAqZqINSl/OuCxxBhB0hlg6OMc0M+wTfXiVURiBmec/2oAnKmzseQAGmd7lt"
+    "CRsK5u5r/mza9HsuogDzQ3rLtloWvm94GkFCaQnJJgMRj9fzxx2k5DgkgYbiG55IAUg5IOSDlgJQD"
+    "EsbL5Y7X8l0HRWi7Ysi7N1cJHCNCkFCqwt1MHmrn9yqgCFQFtt0mCSpuhqYbEo4ns7/fpxl9XNzKe"
+    "CSWtxgWPy/uiZsqIXWPxMCxYSkPOKOeBItEJYCzsZWE1EQgRKMpichCNh5Cwursb+G4CoAShSN8sg"
+    "K4wje+I5T6v8NNY4BkK4ATkHJQN9OWTdlLiUMo/xXbCqAGUq0Cl73vXAGpSXAN3+oQkC7Bt39wXXD"
+    "dplQJbd4VNtu3xUfb7wWWXcpO7RcjZaj8Zih1QMoBKQekHMTuQGx+AdpL17Ar1SfWAAAAAElFTkSu"
+    "QmCC"
+)
+
+
+def _load_page_icon():
+    try:
+        from PIL import Image
+
+        raw = base64.b64decode(_FAVICON_PNG_BASE64)
+        return Image.open(io.BytesIO(raw))
+    except Exception:
+        # Fallback to default Streamlit favicon
+        return None
+
+
+def _read_text(path: Path) -> str:
+    return path.read_text(encoding="utf-8")
 
 
 def _ensure_writable_dir(path_str: str) -> Path:
@@ -147,7 +179,28 @@ def _run_recreate(pptx_path: str, output_dir: str, info_path: str, output_pptx: 
     return created
 
 
-st.set_page_config(page_title="pptx_extractor UI", layout="wide")
+st.set_page_config(page_title="pptx_extractor UI", layout="wide", page_icon=_load_page_icon())
+
+assets_dir = (Path(__file__).resolve().parent.parent / "assets").resolve()
+banner_path = assets_dir / "readme-banner.svg"
+side_path = assets_dir / "ui-side-illustration.svg"
+
+if banner_path.exists() and side_path.exists():
+    banner_svg = _read_text(banner_path)
+    side_svg = _read_text(side_path)
+    st.markdown(
+        f"""
+<div style="display:flex; gap: 16px; align-items: stretch; flex-wrap: wrap;">
+  <div style="flex: 3; min-width: 520px; border-radius: 14px; overflow:hidden;">
+    {banner_svg}
+  </div>
+  <div style="flex: 1; min-width: 320px; border-radius: 14px; overflow:hidden;">
+    {side_svg}
+  </div>
+</div>
+""",
+        unsafe_allow_html=True,
+    )
 
 st.title("pptx_extractor — Web UI")
 st.caption("Run extract/recreate, filter JSON, and validate edits before recreating.")

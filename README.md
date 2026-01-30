@@ -137,8 +137,9 @@ Tip: If you want to preserve SmartArt/backgrounds, pass the original `.pptx` as 
 
 ## Limitations
 
-- SmartArt/diagram shapes are extracted as text blocks, but are not recreated as editable SmartArt (python-pptx limitation).
-  - If you recreate **from a template PPTX** (recommended), SmartArt is preserved from the template.
+ - SmartArt/diagram shapes are extracted as text blocks.
+  - SmartArt is not recreated as *new editable SmartArt* from JSON alone (python-pptx limitation).
+  - If you recreate **from a template PPTX** (recommended), the tool preserves the SmartArt and can update its text by editing the underlying diagram XML.
   - If you recreate **without a template PPTX**, diagram text blocks are rendered as simple textboxes so the deck isn’t “empty-looking”.
 
 ## Troubleshooting

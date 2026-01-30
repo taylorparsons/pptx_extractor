@@ -215,16 +215,34 @@ with tabs[0]:
     st.subheader("Extract PPTX → *_info.json")
     col_up, col_path = st.columns([1, 2])
     with col_up:
-        uploaded_pptx = st.file_uploader("Select a PPTX file", type=["pptx"], accept_multiple_files=False)
+        uploaded_pptx = st.file_uploader(
+            "Select a PPTX file",
+            type=["pptx"],
+            accept_multiple_files=False,
+            key="extract_pptx_uploader",
+        )
     with col_path:
-        pptx_path = st.text_input("PPTX path", value=st.session_state.get("pptx_path", ""))
+        pptx_path = st.text_input(
+            "PPTX path",
+            value=st.session_state.get("pptx_path", ""),
+            key="extract_pptx_path",
+        )
 
     preset_label_to_path = dict(_preset_dirs())
-    preset = st.selectbox("Output directory preset", options=list(preset_label_to_path.keys()), index=0)
-    if st.button("Use preset output directory"):
+    preset = st.selectbox(
+        "Output directory preset",
+        options=list(preset_label_to_path.keys()),
+        index=0,
+        key="extract_output_preset",
+    )
+    if st.button("Use preset output directory", key="extract_use_preset"):
         st.session_state["output_dir"] = preset_label_to_path[preset]
 
-    output_dir = st.text_input("Output directory", value=st.session_state.get("output_dir", _default_output_dir()))
+    output_dir = st.text_input(
+        "Output directory",
+        value=st.session_state.get("output_dir", _default_output_dir()),
+        key="extract_output_dir",
+    )
     st.session_state["output_dir"] = output_dir
 
     if uploaded_pptx is not None:
@@ -238,7 +256,7 @@ with tabs[0]:
 
     col1, col2 = st.columns([1, 2])
     with col1:
-        run_extract = st.button("Run extract", type="primary")
+        run_extract = st.button("Run extract", type="primary", key="extract_run")
     with col2:
         st.write("Tip: Use a writable directory. If not writable, this UI falls back to `./output`.")
 
@@ -264,9 +282,14 @@ with tabs[1]:
     default_info = st.session_state.get("last_info_path", "")
     col_up, col_path = st.columns([1, 2])
     with col_up:
-        uploaded_json = st.file_uploader("Select an extracted *_info.json", type=["json"], accept_multiple_files=False)
+        uploaded_json = st.file_uploader(
+            "Select an extracted *_info.json",
+            type=["json"],
+            accept_multiple_files=False,
+            key="validate_json_uploader",
+        )
     with col_path:
-        info_path = st.text_input("Info JSON path", value=default_info)
+        info_path = st.text_input("Info JSON path", value=default_info, key="validate_info_path")
 
     if uploaded_json is not None:
         try:
@@ -279,9 +302,9 @@ with tabs[1]:
 
     colA, colB, colC = st.columns([1, 1, 2])
     with colA:
-        validate_now = st.button("Validate JSON")
+        validate_now = st.button("Validate JSON", key="validate_run")
     with colB:
-        load_now = st.button("Load JSON")
+        load_now = st.button("Load JSON", key="validate_load")
     with colC:
         st.write("Validation is fast even for large JSON. Editing inline is only enabled for smaller files.")
 
@@ -335,7 +358,7 @@ with tabs[1]:
             type_options = sorted(type_counts.keys())
             default_types = type_options
             keep_types = st.multiselect("Shape types to keep", options=type_options, default=default_types)
-            reindex_slides = st.checkbox("Reindex slides (recommended)", value=True)
+            reindex_slides = st.checkbox("Reindex slides (recommended)", value=True, key="validate_reindex_slides")
 
             filtered = _filtered_json(data, keep_slides=keep_slides, keep_types=keep_types, reindex_slides=reindex_slides)
             st.json(_json_summary(filtered))
@@ -345,7 +368,7 @@ with tabs[1]:
                 p = Path(st.session_state["loaded_json_path"])
                 save_path_default = str(p.with_name(f"filtered_{p.name}"))
             save_path = st.text_input("Save filtered JSON to", value=save_path_default)
-            if st.button("Save filtered JSON", type="primary"):
+            if st.button("Save filtered JSON", type="primary", key="validate_save_filtered"):
                 try:
                     out_path = Path(save_path).expanduser()
                     _save_json(out_path, filtered)
@@ -366,8 +389,8 @@ with tabs[1]:
 
         if info_file and size and size <= 2_000_000:
             raw = info_file.read_text(encoding="utf-8")
-            edited = st.text_area("Edit JSON", value=raw, height=320)
-            if st.button("Validate edited JSON"):
+            edited = st.text_area("Edit JSON", value=raw, height=320, key="validate_inline_editor")
+            if st.button("Validate edited JSON", key="validate_inline_validate"):
                 try:
                     edited_data = json.loads(edited)
                     errors = validate_info_json(edited_data)
@@ -378,7 +401,7 @@ with tabs[1]:
                         st.code("\n".join(str(e) for e in errors))
                 except Exception as e:
                     st.exception(e)
-            if st.button("Save edited JSON"):
+            if st.button("Save edited JSON", key="validate_inline_save"):
                 try:
                     json.loads(edited)  # ensure valid JSON before write
                     info_file.write_text(edited, encoding="utf-8")

@@ -45,6 +45,15 @@ def _read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
+def _svg_data_uri(path: Path) -> str | None:
+    try:
+        svg = _read_text(path)
+    except Exception:
+        return None
+    encoded = base64.b64encode(svg.encode("utf-8")).decode("ascii")
+    return f"data:image/svg+xml;base64,{encoded}"
+
+
 def _ensure_writable_dir(path_str: str) -> Path:
     path = Path(path_str).expanduser()
     try:
@@ -185,17 +194,17 @@ assets_dir = (Path(__file__).resolve().parent.parent / "assets").resolve()
 banner_path = assets_dir / "readme-banner.svg"
 side_path = assets_dir / "ui-side-illustration.svg"
 
-if banner_path.exists() and side_path.exists():
-    banner_svg = _read_text(banner_path)
-    side_svg = _read_text(side_path)
+banner_uri = _svg_data_uri(banner_path) if banner_path.exists() else None
+side_uri = _svg_data_uri(side_path) if side_path.exists() else None
+if banner_uri and side_uri:
     st.markdown(
         f"""
 <div style="display:flex; gap: 16px; align-items: stretch; flex-wrap: wrap;">
   <div style="flex: 3; min-width: 520px; border-radius: 14px; overflow:hidden;">
-    {banner_svg}
+    <img alt="pptx_extractor banner" src="{banner_uri}" style="width: 100%; height: auto; display:block;" />
   </div>
   <div style="flex: 1; min-width: 320px; border-radius: 14px; overflow:hidden;">
-    {side_svg}
+    <img alt="pptx_extractor illustration" src="{side_uri}" style="width: 100%; height: auto; display:block;" />
   </div>
 </div>
 """,

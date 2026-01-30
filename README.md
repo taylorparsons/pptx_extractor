@@ -42,6 +42,23 @@ If you prefer not to use the CLI, you can run a local Streamlit UI:
 
 This installs UI-only dependencies from `requirements-ui.txt` (first run) and starts a local server. Follow the printed URL (usually `http://localhost:8501`).
 
+#### Web UI quick guide
+
+**Extract tab**
+1. Choose a PPTX (upload or paste the path).
+2. Pick an output directory.
+3. Click **Run extract**.
+
+**Validate / Filter JSON tab**
+1. Upload or paste a `*_info.json` path.
+2. Click **Validate JSON** (errors are shown with JSON paths).
+3. Optionally filter slides/shape types and **Save filtered JSON**.
+
+**Recreate tab**
+1. (Recommended) Provide the original PPTX as a **template** so styling is preserved.
+2. The JSON path is auto‑filled if you came from Extract/Validate.
+3. Click **Run recreate** and use the **Open PPTX** link to open the output.
+
 ### Option B: manual virtualenv setup
 
 ```sh

@@ -327,6 +327,8 @@ with tabs[1]:
                 data = _load_json(info_file)
                 st.session_state["loaded_json_data"] = data
                 st.session_state["loaded_json_path"] = str(info_file)
+                st.session_state["last_info_path"] = str(info_file)
+                st.session_state["recreate_info_path"] = str(info_file)
                 st.success("Loaded JSON.")
                 st.json(_json_summary(data))
             except Exception as e:
@@ -341,6 +343,8 @@ with tabs[1]:
                 errors = validate_info_json(data)
                 if not errors:
                     st.success("OK: JSON matches expected schema (v2) enough to recreate.")
+                    st.session_state["last_info_path"] = str(info_file)
+                    st.session_state["recreate_info_path"] = str(info_file)
                 else:
                     st.error(f"Found {len(errors)} issue(s).")
                     st.code("\n".join(str(e) for e in errors))
@@ -490,5 +494,9 @@ with tabs[2]:
                     output_pptx=output_pptx or None,
                 )
                 st.success(f"Created PPTX: {created}")
+                try:
+                    st.link_button("Open PPTX", Path(created).resolve().as_uri())
+                except Exception:
+                    st.markdown(f"[Open PPTX]({Path(created).resolve().as_uri()})")
             except Exception as e:
                 st.exception(e)

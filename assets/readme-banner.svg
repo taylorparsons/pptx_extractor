@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320" role="img" aria-label="pptx_extractor — Extract PPTX to JSON, edit safely, recreate a styled deck">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B1220"/>
+      <stop offset="1" stop-color="#111B33"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#6EE7FF"/>
+      <stop offset="1" stop-color="#A78BFA"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="320" fill="url(#bg)"/>
+
+  <!-- Left icon group -->
+  <g transform="translate(72,56)" filter="url(#shadow)">
+    <!-- Slide card -->
+    <rect x="0" y="0" rx="18" ry="18" width="260" height="208" fill="#0F172A" stroke="#233052" stroke-width="2"/>
+    <rect x="18" y="18" rx="10" ry="10" width="224" height="48" fill="#0B1020" stroke="#1F2A44" stroke-width="2"/>
+    <rect x="18" y="80" rx="12" ry="12" width="224" height="112" fill="#0B1020" stroke="#1F2A44" stroke-width="2"/>
+    <circle cx="40" cy="42" r="6" fill="#6EE7FF"/>
+    <circle cx="60" cy="42" r="6" fill="#A78BFA"/>
+    <circle cx="80" cy="42" r="6" fill="#34D399"/>
+
+    <!-- JSON braces -->
+    <g transform="translate(38,106)">
+      <path d="M28 0 C12 0, 12 18, 22 24 C12 30, 12 48, 28 48" fill="none" stroke="#6EE7FF" stroke-width="6" stroke-linecap="round"/>
+      <path d="M162 0 C178 0, 178 18, 168 24 C178 30, 178 48, 162 48" fill="none" stroke="#A78BFA" stroke-width="6" stroke-linecap="round"/>
+      <text x="62" y="34" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace" font-size="22" fill="#E5E7EB">
+        info.json
+      </text>
+    </g>
+  </g>
+
+  <!-- Arrow -->
+  <g transform="translate(360,140)">
+    <path d="M0 20 H190" stroke="url(#accent)" stroke-width="10" stroke-linecap="round"/>
+    <path d="M190 20 L164 2" stroke="url(#accent)" stroke-width="10" stroke-linecap="round"/>
+    <path d="M190 20 L164 38" stroke="url(#accent)" stroke-width="10" stroke-linecap="round"/>
+  </g>
+
+  <!-- Right icon group -->
+  <g transform="translate(580,56)" filter="url(#shadow)">
+    <rect x="0" y="0" rx="18" ry="18" width="260" height="208" fill="#0F172A" stroke="#233052" stroke-width="2"/>
+    <rect x="18" y="18" rx="10" ry="10" width="224" height="48" fill="#0B1020" stroke="#1F2A44" stroke-width="2"/>
+    <rect x="18" y="80" rx="12" ry="12" width="224" height="112" fill="#0B1020" stroke="#1F2A44" stroke-width="2"/>
+    <text x="36" y="52" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" font-size="18" fill="#E5E7EB">
+      recreated.pptx
+    </text>
+    <g transform="translate(38,102)">
+      <rect x="0" y="0" width="184" height="20" rx="10" fill="#111B33"/>
+      <rect x="0" y="0" width="136" height="20" rx="10" fill="url(#accent)"/>
+      <rect x="0" y="34" width="184" height="20" rx="10" fill="#111B33"/>
+      <rect x="0" y="34" width="156" height="20" rx="10" fill="url(#accent)"/>
+      <rect x="0" y="68" width="184" height="20" rx="10" fill="#111B33"/>
+      <rect x="0" y="68" width="112" height="20" rx="10" fill="url(#accent)"/>
+    </g>
+  </g>
+
+  <!-- Title and subtitle -->
+  <g transform="translate(72,282)">
+    <text x="0" y="0" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" font-size="34" font-weight="700" fill="#F9FAFB">
+      pptx_extractor
+    </text>
+    <text x="320" y="0" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" font-size="18" fill="#C7D2FE">
+      Extract PPTX → JSON, edit safely, recreate a styled deck
+    </text>
+  </g>
+</svg>

@@ -31,11 +31,29 @@ def main():
                 )
                 raise SystemExit(2)
             raise
-        info_path = os.path.join(args.output_dir, f"{os.path.basename(args.pptx_path).split('.')[0]}_info.json")
+        info_path = args.info_path or os.path.join(
+            args.output_dir, f"{os.path.basename(args.pptx_path).split('.')[0]}_info.json"
+        )
+        if os.path.isdir(info_path):
+            raise IsADirectoryError(f"Info path must be a JSON file, got a directory: {info_path}")
         if not os.path.exists(info_path):
             raise FileNotFoundError(f"Info file not found: {info_path}")
-        recreator = Recreator(info_path)
-        output_pptx_path = recreator.recreate_pptx(args.output_dir)
+        template_pptx_path = args.pptx_path if os.path.isfile(args.pptx_path) else None
+        recreator = Recreator(info_path, template_pptx_path=template_pptx_path)
+
+        output_path = None
+        if args.output_pptx:
+            candidate = os.path.expanduser(args.output_pptx)
+            if os.path.isdir(candidate):
+                output_path = None
+            elif os.path.basename(candidate) == candidate:
+                output_path = os.path.join(args.output_dir, candidate)
+            else:
+                output_path = candidate
+            if output_path and not output_path.lower().endswith(".pptx"):
+                output_path = f"{output_path}.pptx"
+
+        output_pptx_path = recreator.recreate_pptx(args.output_dir, output_path=output_path)
         logging.info(f"New PPTX created at: {output_pptx_path}")
 
 if __name__ == "__main__":

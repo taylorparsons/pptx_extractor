@@ -1,5 +1,5 @@
 from recreator.shape_recreators.base_shape_recreator import BaseShapeRecreator  
-from pptx.util import Inches, Pt  
+from pptx.util import Inches, Pt, Emu  
 from pptx.dml.color import RGBColor  
 from pptx.enum.text import PP_ALIGN  
 from pptx.table import Table  
@@ -16,17 +16,70 @@ class ExtendedRGBColor(RGBColor):
 class TableShapeRecreator(BaseShapeRecreator):  
     def can_recreate(self, shape_data):  
         return shape_data["type"] == "table"  
+
+    def apply_to_shape(self, shape, shape_data):
+        if not getattr(shape, "has_table", False):
+            return False
+
+        table = shape.table
+
+        col_widths = shape_data.get("col_widths") or []
+        for i, col_width in enumerate(col_widths):
+            if col_width is None:
+                continue
+            try:
+                table.columns[i].width = Emu(int(col_width))
+            except (IndexError, TypeError, ValueError):
+                pass
+
+        row_heights = shape_data.get("row_heights") or []
+        for i, row_height in enumerate(row_heights):
+            if row_height is None:
+                continue
+            try:
+                table.rows[i].height = Emu(int(row_height))
+            except (IndexError, TypeError, ValueError):
+                pass
+
+        rows_data = shape_data.get("rows") or []
+        for i, row_data in enumerate(rows_data):
+            for j, cell_data in enumerate(row_data):
+                try:
+                    cell = table.cell(i, j)
+                except IndexError:
+                    continue
+                cell.text = (cell_data or {}).get("text", "")
+
+        return True
   
     def recreate(self, slide, shape_data):  
         rows_count = len(shape_data["rows"])  
         cols_count = len(shape_data["rows"][0])  
   
-        left = shape_data.get("left", Inches(1))  
-        top = shape_data.get("top", Inches(1))  
-        width = shape_data.get("width", Inches(6))  
-        height = shape_data.get("height", Inches(0.5) * rows_count)  
+        left = Emu(int(shape_data["left"])) if isinstance(shape_data.get("left"), (int, float)) else shape_data.get("left", Inches(1))
+        top = Emu(int(shape_data["top"])) if isinstance(shape_data.get("top"), (int, float)) else shape_data.get("top", Inches(1))
+        width = Emu(int(shape_data["width"])) if isinstance(shape_data.get("width"), (int, float)) else shape_data.get("width", Inches(6))
+        height = Emu(int(shape_data["height"])) if isinstance(shape_data.get("height"), (int, float)) else shape_data.get("height", Inches(0.5) * rows_count)
   
         table = slide.shapes.add_table(rows_count, cols_count, left, top, width, height).table  
+
+        col_widths = shape_data.get("col_widths") or []
+        for i, col_width in enumerate(col_widths):
+            if col_width is None:
+                continue
+            try:
+                table.columns[i].width = Emu(int(col_width))
+            except (IndexError, TypeError, ValueError):
+                pass
+
+        row_heights = shape_data.get("row_heights") or []
+        for i, row_height in enumerate(row_heights):
+            if row_height is None:
+                continue
+            try:
+                table.rows[i].height = Emu(int(row_height))
+            except (IndexError, TypeError, ValueError):
+                pass
   
         for i, row_data in enumerate(shape_data["rows"]):  
             for j, cell_data in enumerate(row_data):  

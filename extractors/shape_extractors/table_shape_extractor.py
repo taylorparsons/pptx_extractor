@@ -8,6 +8,16 @@ class TableShapeExtractor(BaseShapeExtractor):
         table = shape.table
         rows = []
 
+        col_widths = []
+        for col in table.columns:
+            width = getattr(col, "width", None)
+            col_widths.append(int(width) if width is not None else None)
+
+        row_heights = []
+        for row in table.rows:
+            height = getattr(row, "height", None)
+            row_heights.append(int(height) if height is not None else None)
+
         for row in table.rows:
             cells = []
             for cell in row.cells:
@@ -21,5 +31,7 @@ class TableShapeExtractor(BaseShapeExtractor):
 
         return {
             "type": "table",
+            "col_widths": col_widths,
+            "row_heights": row_heights,
             "rows": rows
         }

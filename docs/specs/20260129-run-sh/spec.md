@@ -18,12 +18,14 @@ Acceptance scenarios:
 1. Given a fresh checkout, When I run `./run.sh -h`, Then I see the CLI usage help. (Verifies: FR-001)
 2. Given a PPTX path, When I run `./run.sh <pptx> <outdir> --extract`, Then `<outdir>/<basename>_info.json` is created. (Verifies: FR-001)
 3. Given the repo README, When I look for setup/run instructions, Then `./run.sh` usage is documented with examples. (Verifies: FR-002)
+4. Given an unwritable output directory (e.g. a volume root), When I run `./run.sh <pptx> <outdir> --extract`, Then it falls back to a writable directory and prints which directory is used. (Verifies: FR-003)
 
 ## Requirements
 
 Functional requirements:
 - FR-001: Add `run.sh` that creates/uses `.venv`, installs dependencies from `requirements.txt`, and runs `python main.py` forwarding args. (Sources: CR-20260129-1210; D-20260129-1211)
 - FR-002: Update `README.md` to include `./run.sh` instructions and examples. (Sources: CR-20260129-1210)
+- FR-003: When `output_dir` is not writable, `run.sh` should fall back to a writable output directory and avoid confusing Python stack traces. (Sources: CR-20260130-1153; D-20260130-1154)
 
 ## Edge cases
 - Missing `python3.11`: script falls back to `python3`. (Verifies: FR-001)

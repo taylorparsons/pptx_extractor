@@ -20,15 +20,48 @@ Alternatives considered:
 Acceptance / test:
 - `./run.sh -h` prints the CLI help.
 - `./run.sh <pptx> <outdir> --extract` creates `<outdir>/<basename>_info.json`.
-*** Add File: docs/TRACEABILITY.md
-# Traceability (How to follow the audit trail)
 
-Start here:
-1) Find the relevant raw request in `docs/requests.md` (CR-...).
-2) Read linked interpretations/tradeoffs in `docs/decisions.md` (D-...).
-3) Open the feature spec at `docs/specs/20260129-run-sh/spec.md`.
-   - Requirements use IDs (FR-...) and include `Sources: CR-...; D-...`.
-   - Acceptance scenarios include `Verifies: FR-...`.
-4) Open the feature task list at `docs/specs/20260129-run-sh/tasks.md`.
-   - Tasks include `Implements: FR-...`.
-5) Review execution notes in `docs/progress.txt` for commands, outcomes, and completion.
+## D-20260130-1154
+Date: 2026-01-30 11:54
+Inputs: CR-20260130-1153
+PRD: Run Script; CLI Enhancements; Extraction & Recreation Fidelity
+
+Decision:
+- Treat the current codebase behavior as the source of truth and update RALPH docs to match it.
+- Keep `20260129-run-sh` focused on the `run.sh` wrapper + README documentation, but update it to include the current `run.sh` behavior (output directory fallback and new flags passthrough).
+- Document post-run.sh changes (CLI flags and extraction/recreation fidelity improvements) as a new feature spec `20260130-cli-and-fidelity`.
+
+Rationale:
+- The repo has evolved beyond the original `run.sh` scope, and splitting the spec keeps traceability readable while still reflecting current behavior.
+
+Alternatives considered:
+- Expand `20260129-run-sh` spec to cover all subsequent changes (rejected: would mix unrelated concerns and obscure the audit trail).
+
+Acceptance / test:
+- `docs/PRD.md` includes requirements for the new documented behaviors with `Sources: CR-20260130-1153; D-20260130-1154`.
+- `docs/specs/20260129-run-sh/spec.md` reflects current `run.sh` behavior.
+- New spec `docs/specs/20260130-cli-and-fidelity/spec.md` matches the implemented CLI flags and extraction/recreation behavior.
+
+## D-20260130-1211
+Date: 2026-01-30 12:11
+Inputs: CR-20260130-1210
+PRD: Extraction & Recreation Fidelity; Run Script; CLI Enhancements
+
+Decision:
+- Add `slide_index` (0-based) to each slide entry in extracted JSON so users can verify slide coverage and tooling can map slides deterministically.
+- When recreating from JSON without a template PPTX, render extracted `diagram` text blocks as simple textboxes so the recreated deck is not “empty-looking”.
+- Keep skipping `diagram` recreation when a template PPTX is used, to avoid duplicating SmartArt (the template already contains it).
+- Repair the RALPH decision log by removing an accidentally pasted patch/template snippet that was not a real decision entry.
+
+Rationale:
+- `slide_index` makes it obvious whether slides are missing and makes debugging deterministic.
+- python-pptx cannot recreate editable SmartArt; textbox placeholders are the most reliable fallback when no template exists.
+- In template mode, preserving the original SmartArt is preferable to duplicating it.
+
+Alternatives considered:
+- Attempt to reconstruct SmartArt from JSON (rejected: out of scope and not reliably supported by python-pptx).
+
+Acceptance / test:
+- `./run.sh <pptx> <outdir> --extract` produces JSON with `slides[].slide_index` values `0..N-1`.
+- `./run.sh dummy.pptx <outdir> --recreate --info-path <json>` produces a PPTX containing extracted diagram text in slide text.
+- `./run.sh <pptx> <outdir> --recreate --info-path <json>` preserves SmartArt content via the template PPTX without duplicating it.

@@ -7,7 +7,7 @@ The PPTX Utility Tool is a Python project that allows you to extract presentatio
 Before using this tool, make sure you have the following:
 
 - Python 3.x installed on your system
-- `python-pptx` library installed (`python3 -m pip install python-pptx`)
+- Dependencies installed in a virtualenv (use `./run.sh` or Option B below)
 
 ## Getting Started
 
@@ -44,7 +44,7 @@ To extract presentation information from a PPTX file, use the following command:
 ```
 
 - `<pptx_path>`: Path to the PPTX file you want to extract information from.
-- `<output_dir>`: Directory where the extracted information will be saved as a JSON file.
+- `<output_dir>`: Directory where the extracted information will be saved as a JSON file (must be writable). If it isn’t writable (common when pointing at a volume root), `run.sh` falls back to `./output`.
 
 Example:
 ```sh
@@ -61,7 +61,7 @@ To recreate the PPTX file using the extracted information, use the following com
 ./run.sh <pptx_path> <output_dir> --recreate
 ```
 
-- `<pptx_path>`: Path to the PPTX file you want to recreate (used to determine the JSON file name).
+- `<pptx_path>`: Path to the PPTX file you want to recreate (used to determine the JSON file name). If this file exists, it is used as a template to preserve slide masters/backgrounds.
 - `<output_dir>`: Directory where the recreated PPTX file will be saved.
 
 Example:
@@ -69,7 +69,29 @@ Example:
 ./run.sh presentation.pptx output --recreate
 ```
 
-This command will look for the extracted information JSON file (`presentation_info.json`) in the `output` directory and use it to recreate the PPTX file. The recreated file will be saved as `recreated_presentation.pptx` in the `output` directory.
+This command will look for the extracted information JSON file (`<pptx_basename>_info.json`) in the `output_dir` and use it to recreate the PPTX file. The output is saved as `recreated_<pptx_basename>.pptx` (or `recreated_<json_stem>.pptx` when using `--info-path`).
+
+### Recreating from a specific JSON file
+
+If you moved/renamed the extracted JSON file, you can pass it explicitly:
+
+```sh
+./run.sh anything.pptx output --recreate --info-path /path/to/some_info.json
+```
+
+Tip: If you want to preserve SmartArt/backgrounds, pass the original `.pptx` as `<pptx_path>` (so it can be used as a template) even when using `--info-path`.
+
+### Recreating with a specific output filename
+
+```sh
+./run.sh anything.pptx output --recreate --info-path /path/to/some_info.json --output-pptx recreated_custom_name.pptx
+```
+
+## Limitations
+
+- SmartArt/diagram shapes are extracted as text blocks, but are not recreated as editable SmartArt (python-pptx limitation).
+  - If you recreate **from a template PPTX** (recommended), SmartArt is preserved from the template.
+  - If you recreate **without a template PPTX**, diagram text blocks are rendered as simple textboxes so the deck isn’t “empty-looking”.
 
 ## Troubleshooting
 
@@ -77,6 +99,8 @@ If you encounter any issues or errors while using the PPTX Utility Tool, please 
 
 - Make sure you have installed the required dependencies (`python-pptx`).
 - Ensure that you are providing the correct paths for the PPTX file and output directory.
+- If you pass a path to `--info-path`, keep it on one shell line and quote it:
+  - Good: `./run.sh dummy.pptx out --recreate --info-path "~/REI_Principal_PM_Flashcards_info.json"`
 - Check the error messages logged in the console for any specific details about the issue.
 
 ## License

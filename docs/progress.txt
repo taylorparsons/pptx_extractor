@@ -1,15 +1,16 @@
-Session: 2026-01-29 12:11
-Feature: 20260129-run-sh
-Input: CR-20260129-1210
-Decisions: D-20260129-1211
-Spec: docs/specs/20260129-run-sh/spec.md
-Tasks: docs/specs/20260129-run-sh/tasks.md
-Goal: Add `run.sh` and document it in README.
+Session: 2026-01-30 11:55
+Feature: 20260130-cli-and-fidelity
+Input: CR-20260130-1153
+Decisions: D-20260130-1154
+Spec: docs/specs/20260130-cli-and-fidelity/spec.md
+Tasks: docs/specs/20260130-cli-and-fidelity/tasks.md
+Goal: Update RALPH docs to match current behavior (run.sh + CLI flags + extraction/recreate fidelity).
 
 DONE
-- [2026-01-29 12:11] Initialize RALPH traceability docs.
-- [2026-01-29 12:12] T-001: Add `run.sh` helper for venv + run. (Implements: FR-001)
-- [2026-01-29 12:13] T-002: Document `./run.sh` in `README.md`. (Implements: FR-002)
+- [2026-01-29 12:11] Initialize RALPH traceability docs. (Feature: 20260129-run-sh)
+- [2026-01-29 12:12] T-001: Add `run.sh` helper for venv + run. (Implements: FR-001) (Feature: 20260129-run-sh)
+- [2026-01-29 12:13] T-002: Document `./run.sh` in `README.md`. (Implements: FR-002) (Feature: 20260129-run-sh)
+- [2026-01-30 11:55] Documented current repo behavior in PRD/specs/tasks for traceability. (Feature: 20260130-cli-and-fidelity)
 
 IN PROGRESS
 - (none)
@@ -18,6 +19,38 @@ NEXT
 - (none)
 
 NOTES
-- Commands run: `bash -n run.sh` -> ok; `./run.sh -h` -> prints usage; `python3 -m compileall .` -> ok; `./run.sh mod3_cust_journey/recreated_Customer Journey Map Template.pptx /tmp/pptx_out.1azc8z --extract` -> created JSON
+- Commands run: `python3 -m compileall main.py extractors recreator utils` -> ok
 - Risks / open questions:
   - `python3` version may vary by machine; script should auto-select an available interpreter.
+
+---
+
+Session: 2026-01-30 12:12
+Feature: 20260130-cli-and-fidelity
+Input: CR-20260130-1210
+Decisions: D-20260130-1211
+Spec: docs/specs/20260130-cli-and-fidelity/spec.md
+Tasks: docs/specs/20260130-cli-and-fidelity/tasks.md
+Goal: Fix slide coverage verification and improve JSON-only recreate visibility; ensure repo hygiene and docs alignment.
+
+DONE
+- [2026-01-30 12:12] Added `slide_index` to extracted JSON and rendered `diagram` text as textboxes in JSON-only recreate.
+- [2026-01-30 12:12] Validated extract+recreate on the REI deck and created new recreated outputs with explicit names.
+- [2026-01-30 12:12] Updated RALPH docs/spec to match the change; repaired `docs/decisions.md` corruption; removed absolute path examples.
+
+IN PROGRESS
+- (none)
+
+NEXT
+- (none)
+
+NOTES
+- Commands run:
+  - `python3 -m compileall main.py extractors recreator utils` -> ok
+  - `bash -n run.sh` -> ok
+  - `./run.sh "/Users/taylorparsons/REI_Principal_PM_Flashcards.pptx" "/Users/taylorparsons" --extract` -> ok
+  - `./run.sh dummy.pptx "/Users/taylorparsons" --recreate --info-path "/Users/taylorparsons/REI_Principal_PM_Flashcards_info.json" --output-pptx "/Users/taylorparsons/recreated_REI_Principal_PM_Flashcards_json_only_20260130_fixed.pptx"` -> ok
+  - `./run.sh "/Users/taylorparsons/REI_Principal_PM_Flashcards.pptx" "/Users/taylorparsons" --recreate --info-path "/Users/taylorparsons/REI_Principal_PM_Flashcards_info.json" --output-pptx "/Users/taylorparsons/recreated_REI_Principal_PM_Flashcards_template_20260130_fixed.pptx"` -> ok
+  - `audit_repository_security.py --quick` -> ok (0 findings)
+- Risks / open questions:
+  - Secret scanners run with `--all` can flag false positives in `.venv/` and ignored `*_info.json`; use `--staged` for commit gating.

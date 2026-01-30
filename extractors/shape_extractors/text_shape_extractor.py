@@ -6,10 +6,34 @@ class TextShapeExtractor(BaseShapeExtractor):
 
     def extract(self, shape):
         text_frame = shape.text_frame
+        text_frame_data = {
+            "vertical_anchor": int(text_frame.vertical_anchor) if text_frame.vertical_anchor is not None else None,
+            "word_wrap": text_frame.word_wrap,
+            "margin_left": int(text_frame.margin_left) if text_frame.margin_left is not None else None,
+            "margin_right": int(text_frame.margin_right) if text_frame.margin_right is not None else None,
+            "margin_top": int(text_frame.margin_top) if text_frame.margin_top is not None else None,
+            "margin_bottom": int(text_frame.margin_bottom) if text_frame.margin_bottom is not None else None,
+        }
         paragraphs = []
 
         for paragraph in text_frame.paragraphs:
-            paragraph_data = {"runs": []}
+            paragraph_font = getattr(paragraph, "font", None)
+            paragraph_data = {
+                "runs": [],
+                "alignment": int(paragraph.alignment) if paragraph.alignment is not None else None,
+                "level": int(paragraph.level) if paragraph.level is not None else None,
+                "line_spacing": getattr(paragraph.line_spacing, "pt", None) if paragraph.line_spacing is not None else None,
+                "space_before": getattr(paragraph.space_before, "pt", None) if paragraph.space_before is not None else None,
+                "space_after": getattr(paragraph.space_after, "pt", None) if paragraph.space_after is not None else None,
+                "font": {
+                    "name": getattr(paragraph_font, "name", None) if paragraph_font is not None else None,
+                    "size": getattr(getattr(paragraph_font, "size", None), "pt", None) if paragraph_font is not None else None,
+                    "bold": getattr(paragraph_font, "bold", None) if paragraph_font is not None else None,
+                    "italic": getattr(paragraph_font, "italic", None) if paragraph_font is not None else None,
+                    "underline": getattr(paragraph_font, "underline", None) if paragraph_font is not None else None,
+                    "color": self.get_color(getattr(paragraph_font, "color", None)) if paragraph_font is not None else None,
+                },
+            }
             for run in paragraph.runs:
                 run_data = {
                     "text": run.text,
@@ -25,6 +49,7 @@ class TextShapeExtractor(BaseShapeExtractor):
 
         return {
             "type": "text",
+            "text_frame": text_frame_data,
             "paragraphs": paragraphs
         }
 

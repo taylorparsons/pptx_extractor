@@ -2,6 +2,7 @@
 __pycache__/
 *.pyc
 .venv/
+.venv
 .git/
 .git-work/
 .env
@@ -11,3 +12,6 @@ __pycache__/
 output/
 out/
 *.log
+
+# Extract outputs
+*_info.json

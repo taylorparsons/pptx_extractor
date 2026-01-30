@@ -238,6 +238,15 @@ def validate_info_json(data: Any) -> list[ValidationError]:
         _expect_int(errors, "$.presentation.slide_width", presentation.get("slide_width"))
         _expect_int(errors, "$.presentation.slide_height", presentation.get("slide_height"))
 
+    source = root.get("source_pptx")
+    if source is not None:
+        source_obj = _expect_dict(errors, "$.source_pptx", source)
+        if source_obj is not None:
+            if source_obj.get("path") is not None:
+                _expect_str(errors, "$.source_pptx.path", source_obj.get("path"))
+            if source_obj.get("basename") is not None:
+                _expect_str(errors, "$.source_pptx.basename", source_obj.get("basename"))
+
     slides = _expect_list(errors, "$.slides", root.get("slides"))
     if slides is None:
         return errors
@@ -304,4 +313,3 @@ def validate_info_json(data: Any) -> list[ValidationError]:
             )
 
     return errors
-

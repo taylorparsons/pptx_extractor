@@ -137,7 +137,8 @@ If you moved/renamed the extracted JSON file, you can pass it explicitly:
 ./run.sh anything.pptx output --recreate --info-path /path/to/some_info.json
 ```
 
-Tip: If you want to preserve SmartArt/backgrounds, pass the original `.pptx` as `<pptx_path>` (so it can be used as a template) even when using `--info-path`.
+Tip: If you want to preserve SmartArt/backgrounds, pass the original `.pptx` as `<pptx_path>` (so it can be used as a template) even when using `--info-path`.  
+Also, extracted JSON now stores a template hint (`source_pptx`); if the original PPTX still exists at that path (or next to the JSON), recreate will automatically use it to keep styling.
 
 ### Recreating with a specific output filename
 

@@ -41,6 +41,10 @@ class Extractor:
         prs = Presentation(self.pptx_path)
         slide_info = {
             "version": 2,
+            "source_pptx": {
+                "path": self.pptx_path,
+                "basename": os.path.basename(self.pptx_path),
+            },
             "presentation": {
                 "slide_width": int(prs.slide_width),
                 "slide_height": int(prs.slide_height),

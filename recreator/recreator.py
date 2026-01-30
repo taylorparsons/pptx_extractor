@@ -39,6 +39,25 @@ class Recreator:
             slides = slide_info.get("slides") or []
         return presentation, slides
 
+    def _resolve_template_path(self, slide_info):
+        if self.template_pptx_path and os.path.isfile(self.template_pptx_path):
+            return self.template_pptx_path
+
+        if isinstance(slide_info, dict):
+            source = slide_info.get("source_pptx") or {}
+            if isinstance(source, dict):
+                source_path = source.get("path")
+                if source_path and os.path.isfile(source_path):
+                    return source_path
+
+                basename = source.get("basename")
+                if basename:
+                    candidate = os.path.join(os.path.dirname(self.info_path), basename)
+                    if os.path.isfile(candidate):
+                        return candidate
+
+        return None
+
     def _shape_geometry(self, shape):
         try:
             return (int(shape.left), int(shape.top), int(shape.width), int(shape.height))
@@ -102,8 +121,8 @@ class Recreator:
 
         presentation, slides = self._parse_slide_info(slide_info)
 
-        template_path = self.template_pptx_path
-        if template_path and os.path.isfile(template_path) and template_path.lower().endswith(".pptx"):
+        template_path = self._resolve_template_path(slide_info)
+        if template_path and template_path.lower().endswith(".pptx"):
             prs = Presentation(template_path)
             template_slides = list(prs.slides)
             diagram_recreator = None

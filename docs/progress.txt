@@ -48,9 +48,9 @@ NOTES
 - Commands run:
   - `python3 -m compileall main.py extractors recreator utils` -> ok
   - `bash -n run.sh` -> ok
-  - `./run.sh "/Users/taylorparsons/REI_Principal_PM_Flashcards.pptx" "/Users/taylorparsons" --extract` -> ok
-  - `./run.sh dummy.pptx "/Users/taylorparsons" --recreate --info-path "/Users/taylorparsons/REI_Principal_PM_Flashcards_info.json" --output-pptx "/Users/taylorparsons/recreated_REI_Principal_PM_Flashcards_json_only_20260130_fixed.pptx"` -> ok
-  - `./run.sh "/Users/taylorparsons/REI_Principal_PM_Flashcards.pptx" "/Users/taylorparsons" --recreate --info-path "/Users/taylorparsons/REI_Principal_PM_Flashcards_info.json" --output-pptx "/Users/taylorparsons/recreated_REI_Principal_PM_Flashcards_template_20260130_fixed.pptx"` -> ok
+  - `./run.sh "<pptx_path>" "<output_dir>" --extract` -> ok
+  - `./run.sh dummy.pptx "<output_dir>" --recreate --info-path "<output_dir>/<pptx_basename>_info.json" --output-pptx "<output_dir>/recreated_<pptx_basename>.pptx"` -> ok
+  - `./run.sh "<pptx_path>" "<output_dir>" --recreate --info-path "<output_dir>/<pptx_basename>_info.json" --output-pptx "<output_dir>/recreated_<pptx_basename>.pptx"` -> ok
   - `audit_repository_security.py --quick` -> ok (0 findings)
 - Risks / open questions:
   - Secret scanners run with `--all` can flag false positives in `.venv/` and ignored `*_info.json`; use `--staged` for commit gating.
@@ -83,8 +83,8 @@ NOTES
 - Commands run:
   - `bash -n run.sh` -> ok
   - `python3 -m compileall main.py extractors recreator utils ui` -> ok
-  - `./run.sh "/Users/taylorparsons/REI_Principal_PM_Flashcards.pptx" "/tmp/pptx_webui_smoketest" --extract` -> ok
-  - `./run.sh "/Users/taylorparsons/REI_Principal_PM_Flashcards.pptx" "/tmp/pptx_webui_smoketest" --recreate --info-path "/tmp/pptx_webui_smoketest/REI_Principal_PM_Flashcards_info.json" --output-pptx "/tmp/pptx_webui_smoketest/recreated_smoketest.pptx"` -> ok
+  - `./run.sh "<pptx_path>" "/tmp/pptx_webui_smoketest" --extract` -> ok
+  - `./run.sh "<pptx_path>" "/tmp/pptx_webui_smoketest" --recreate --info-path "/tmp/pptx_webui_smoketest/<pptx_basename>_info.json" --output-pptx "/tmp/pptx_webui_smoketest/recreated_<pptx_basename>.pptx"` -> ok
 
 ---
 

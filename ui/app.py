@@ -258,6 +258,7 @@ with tabs[0]:
         try:
             saved = _save_uploaded_file(uploaded_pptx, Path("output/uploads").resolve())
             st.session_state["pptx_path"] = str(saved)
+            st.session_state["template_pptx_path"] = str(saved)
             pptx_path = str(saved)
             st.info(f"Uploaded PPTX saved to: {saved}")
         except Exception as e:
@@ -279,6 +280,8 @@ with tabs[0]:
                 out_json = _run_extract(pptx_path, output_dir)
                 st.success(f"Extracted JSON: {out_json}")
                 st.session_state["last_info_path"] = str(out_json)
+                st.session_state["recreate_info_path"] = str(out_json)
+                st.session_state["template_pptx_path"] = pptx_path
                 data = _load_json(out_json)
                 st.json(_json_summary(data))
             except Exception as e:

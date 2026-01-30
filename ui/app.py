@@ -32,6 +32,29 @@ def _ensure_writable_dir(path_str: str) -> Path:
     return path
 
 
+def _save_uploaded_file(uploaded_file, dest_dir: Path) -> Path:
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    safe_name = Path(uploaded_file.name).name
+    out_path = dest_dir / safe_name
+    out_path.write_bytes(uploaded_file.getbuffer())
+    return out_path
+
+
+def _default_output_dir() -> str:
+    return str(Path("output").resolve())
+
+
+def _preset_dirs() -> list[tuple[str, str]]:
+    home = str(Path.home())
+    return [
+        ("./output (repo)", _default_output_dir()),
+        ("Home (~)", home),
+        ("Desktop", str(Path(home) / "Desktop")),
+        ("Documents", str(Path(home) / "Documents")),
+        ("Downloads", str(Path(home) / "Downloads")),
+    ]
+
+
 def _load_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
@@ -131,11 +154,35 @@ st.caption("Run extract/recreate, filter JSON, and validate edits before recreat
 
 tabs = st.tabs(["Extract", "Validate / Filter JSON", "Recreate"])
 
+if "output_dir" not in st.session_state:
+    st.session_state["output_dir"] = _default_output_dir()
+
 
 with tabs[0]:
     st.subheader("Extract PPTX → *_info.json")
-    pptx_path = st.text_input("PPTX path", value="")
-    output_dir = st.text_input("Output directory", value=str(Path("output").resolve()))
+    col_up, col_path = st.columns([1, 2])
+    with col_up:
+        uploaded_pptx = st.file_uploader("Select a PPTX file", type=["pptx"], accept_multiple_files=False)
+    with col_path:
+        pptx_path = st.text_input("PPTX path", value=st.session_state.get("pptx_path", ""))
+
+    preset_label_to_path = dict(_preset_dirs())
+    preset = st.selectbox("Output directory preset", options=list(preset_label_to_path.keys()), index=0)
+    if st.button("Use preset output directory"):
+        st.session_state["output_dir"] = preset_label_to_path[preset]
+
+    output_dir = st.text_input("Output directory", value=st.session_state.get("output_dir", _default_output_dir()))
+    st.session_state["output_dir"] = output_dir
+
+    if uploaded_pptx is not None:
+        try:
+            saved = _save_uploaded_file(uploaded_pptx, Path("output/uploads").resolve())
+            st.session_state["pptx_path"] = str(saved)
+            pptx_path = str(saved)
+            st.info(f"Uploaded PPTX saved to: {saved}")
+        except Exception as e:
+            st.exception(e)
+
     col1, col2 = st.columns([1, 2])
     with col1:
         run_extract = st.button("Run extract", type="primary")
@@ -162,7 +209,20 @@ with tabs[1]:
     st.subheader("Validate and filter an extracted JSON")
 
     default_info = st.session_state.get("last_info_path", "")
-    info_path = st.text_input("Info JSON path", value=default_info)
+    col_up, col_path = st.columns([1, 2])
+    with col_up:
+        uploaded_json = st.file_uploader("Select an extracted *_info.json", type=["json"], accept_multiple_files=False)
+    with col_path:
+        info_path = st.text_input("Info JSON path", value=default_info)
+
+    if uploaded_json is not None:
+        try:
+            saved = _save_uploaded_file(uploaded_json, Path("output/uploads").resolve())
+            st.session_state["last_info_path"] = str(saved)
+            info_path = str(saved)
+            st.info(f"Uploaded JSON saved to: {saved}")
+        except Exception as e:
+            st.exception(e)
 
     colA, colB, colC = st.columns([1, 1, 2])
     with colA:
@@ -278,9 +338,57 @@ with tabs[1]:
 
 with tabs[2]:
     st.subheader("Recreate PPTX from JSON")
-    pptx_path = st.text_input("Template PPTX path (optional but recommended for style)", value="")
-    output_dir = st.text_input("Output directory", value=str(Path("output").resolve()), key="recreate_output_dir")
-    info_path = st.text_input("Info JSON path", value=st.session_state.get("last_info_path", ""), key="recreate_info_path")
+    col_up1, col_path1 = st.columns([1, 2])
+    with col_up1:
+        uploaded_template = st.file_uploader(
+            "Select a template PPTX (optional, preserves style)",
+            type=["pptx"],
+            accept_multiple_files=False,
+            key="template_uploader",
+        )
+    with col_path1:
+        pptx_path = st.text_input(
+            "Template PPTX path (optional but recommended for style)",
+            value=st.session_state.get("template_pptx_path", ""),
+        )
+
+    if uploaded_template is not None:
+        try:
+            saved = _save_uploaded_file(uploaded_template, Path("output/uploads").resolve())
+            st.session_state["template_pptx_path"] = str(saved)
+            pptx_path = str(saved)
+            st.info(f"Uploaded template PPTX saved to: {saved}")
+        except Exception as e:
+            st.exception(e)
+
+    preset_label_to_path = dict(_preset_dirs())
+    preset = st.selectbox("Output directory preset", options=list(preset_label_to_path.keys()), index=0, key="recreate_preset")
+    if st.button("Use preset output directory", key="recreate_use_preset"):
+        st.session_state["output_dir"] = preset_label_to_path[preset]
+
+    output_dir = st.text_input("Output directory", value=st.session_state.get("output_dir", _default_output_dir()), key="recreate_output_dir")
+    st.session_state["output_dir"] = output_dir
+
+    col_up2, col_path2 = st.columns([1, 2])
+    with col_up2:
+        uploaded_info = st.file_uploader(
+            "Select an extracted *_info.json",
+            type=["json"],
+            accept_multiple_files=False,
+            key="recreate_json_uploader",
+        )
+    with col_path2:
+        info_path = st.text_input("Info JSON path", value=st.session_state.get("last_info_path", ""), key="recreate_info_path")
+
+    if uploaded_info is not None:
+        try:
+            saved = _save_uploaded_file(uploaded_info, Path("output/uploads").resolve())
+            st.session_state["last_info_path"] = str(saved)
+            info_path = str(saved)
+            st.info(f"Uploaded JSON saved to: {saved}")
+        except Exception as e:
+            st.exception(e)
+
     output_pptx = st.text_input("Output PPTX path or filename (optional)", value="")
 
     if st.button("Run recreate", type="primary"):
@@ -299,4 +407,3 @@ with tabs[2]:
                 st.success(f"Created PPTX: {created}")
             except Exception as e:
                 st.exception(e)
-

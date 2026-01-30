@@ -16,3 +16,8 @@
 - Extract SmartArt/diagram text blocks (so slides with SmartArt aren’t “empty” in JSON). (Sources: CR-20260130-1153, CR-20260130-1210; D-20260130-1154, D-20260130-1211)
 - When recreating and a template PPTX exists at `pptx_path`, use it to preserve slide masters/backgrounds and to avoid duplicating existing pictures. (Sources: CR-20260130-1153; D-20260130-1154)
 - When recreating without a template PPTX, render extracted `diagram` text blocks as simple textboxes so the deck isn’t “empty-looking”. (Sources: CR-20260130-1210; D-20260130-1211)
+
+## Web UI
+
+- Provide a local web UI to run extract/recreate and validate edited JSON with clear, actionable errors. (Sources: CR-20260130-1257; D-20260130-1258)
+- Provide controls to select what gets recreated by filtering an extracted JSON (e.g., choose slides and shape types) before running recreate. (Sources: CR-20260130-1257; D-20260130-1258)

@@ -54,3 +54,31 @@ NOTES
   - `audit_repository_security.py --quick` -> ok (0 findings)
 - Risks / open questions:
   - Secret scanners run with `--all` can flag false positives in `.venv/` and ignored `*_info.json`; use `--staged` for commit gating.
+
+---
+
+Session: 2026-01-30 13:05
+Feature: 20260130-web-ui
+Input: CR-20260130-1257
+Decisions: D-20260130-1258
+Spec: docs/specs/20260130-web-ui/spec.md
+Tasks: docs/specs/20260130-web-ui/tasks.md
+Goal: Add a local web UI for extract/recreate, JSON filtering, and inline validation.
+
+DONE
+- [2026-01-30 13:05] Implemented Streamlit UI with Extract / Validate+Filter / Recreate tabs.
+- [2026-01-30 13:05] Added `./run.sh ui` launcher and optional UI deps in `requirements-ui.txt`.
+- [2026-01-30 13:05] Documented UI usage in README.
+
+IN PROGRESS
+- (none)
+
+NEXT
+- (none)
+
+NOTES
+- Commands run:
+  - `bash -n run.sh` -> ok
+  - `python3 -m compileall main.py extractors recreator utils ui` -> ok
+  - `./run.sh "/Users/taylorparsons/REI_Principal_PM_Flashcards.pptx" "/tmp/pptx_webui_smoketest" --extract` -> ok
+  - `./run.sh "/Users/taylorparsons/REI_Principal_PM_Flashcards.pptx" "/tmp/pptx_webui_smoketest" --recreate --info-path "/tmp/pptx_webui_smoketest/REI_Principal_PM_Flashcards_info.json" --output-pptx "/tmp/pptx_webui_smoketest/recreated_smoketest.pptx"` -> ok

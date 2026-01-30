@@ -32,6 +32,16 @@ chmod +x run.sh
 ./run.sh -h
 ```
 
+### Option C: launch the web UI
+
+If you prefer not to use the CLI, you can run a local Streamlit UI:
+
+```sh
+./run.sh ui
+```
+
+This installs UI-only dependencies from `requirements-ui.txt` (first run) and starts a local server. Follow the printed URL (usually `http://localhost:8501`).
+
 ### Option B: manual virtualenv setup
 
 ```sh

@@ -33,6 +33,15 @@ python -m pip install -r requirements.txt
 
 if [[ $# -eq 0 ]]; then
   python main.py -h
+elif [[ "${1:-}" == "ui" ]]; then
+  shift
+  if [[ -f "requirements-ui.txt" ]]; then
+    python -m pip install -r requirements-ui.txt
+  else
+    echo "Error: requirements-ui.txt not found (needed for UI)." >&2
+    exit 2
+  fi
+  python -m streamlit run ui/app.py --server.headless true "$@"
 elif [[ "${1:-}" == "validate" || "${1:-}" == "validate-json" ]]; then
   shift
   python -m utils.validate_info_json "$@"

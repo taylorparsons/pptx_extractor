@@ -65,3 +65,27 @@ Acceptance / test:
 - `./run.sh <pptx> <outdir> --extract` produces JSON with `slides[].slide_index` values `0..N-1`.
 - `./run.sh dummy.pptx <outdir> --recreate --info-path <json>` produces a PPTX containing extracted diagram text in slide text.
 - `./run.sh <pptx> <outdir> --recreate --info-path <json>` preserves SmartArt content via the template PPTX without duplicating it.
+
+## D-20260130-1258
+Date: 2026-01-30 12:58
+Inputs: CR-20260130-1257
+PRD: Web UI
+
+Decision:
+- Implement the web UI as a lightweight local Streamlit app (no hosted service).
+- Keep the existing CLI as the source of truth and have the UI call the same Python modules (Extractor/Recreator) rather than shelling out.
+- Provide “selection” controls by letting users load an extracted JSON, filter slides and shape types, validate it inline, then recreate from the filtered JSON.
+- Keep Streamlit as an optional dependency via `requirements-ui.txt` so CLI installs remain fast.
+
+Rationale:
+- Streamlit provides a simple, cross-platform local UI with file pickers and fast iteration.
+- Filtering/validation at the JSON layer avoids invasive changes to extraction logic and keeps diffs reviewable.
+
+Alternatives considered:
+- Build a Flask/React app (rejected: larger surface area and more dependencies).
+- Add dozens of CLI flags for per-field selection (rejected: not user-friendly for this use case).
+
+Acceptance / test:
+- `./run.sh ui` launches the local UI.
+- UI can run extract and recreate, and can validate a JSON file and show specific schema errors.
+- UI can filter a JSON (slides/types) and recreate a PPTX from the filtered JSON.

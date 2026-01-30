@@ -42,3 +42,14 @@ yes update the ralphdocs to we are all matched up and decisions are logged
 
 Notes:
 - The “missing slide 1-8” report refers to verifying the extracted JSON contains a complete, ordered slide list for the REI deck.
+
+## CR-20260130-1257
+Date: 2026-01-30 12:57
+Source: chat
+
+Request (verbatim):
+In a new feature branch create a web based ui untility the the user can use to select the extract values and recreated values as well as inline json validator
+use the latest version of $ralph to help
+
+Notes:
+- Interpreted as: a local web UI that can run extract/recreate, let the user filter what gets recreated (e.g., slides/shape types), and validate edited JSON with clear errors.

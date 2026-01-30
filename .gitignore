@@ -15,3 +15,6 @@ out/
 
 # Extract outputs
 *_info.json
+
+# Local sample decks
+/mod3_cust_journey/

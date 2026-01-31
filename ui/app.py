@@ -4,6 +4,8 @@ import base64
 import io
 import json
 import os
+import signal
+import time
 from collections import Counter
 from pathlib import Path
 from typing import Any
@@ -43,6 +45,14 @@ def _load_page_icon():
 
 def _read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
+
+
+def _shutdown_server():
+    try:
+        time.sleep(0.3)
+        os.kill(os.getpid(), signal.SIGTERM)
+    except Exception:
+        os._exit(0)
 
 
 def _svg_data_uri(path: Path) -> str | None:
@@ -201,6 +211,13 @@ def _run_recreate(pptx_path: str, output_dir: str, info_path: str, output_pptx: 
 
 
 st.set_page_config(page_title="pptx_extractor UI", layout="wide", page_icon=_load_page_icon())
+
+with st.sidebar:
+    st.subheader("App controls")
+    confirm_quit = st.checkbox("Confirm quit", value=False)
+    if st.button("Quit app", type="primary") and confirm_quit:
+        st.warning("Shutting down… you can close this tab.")
+        _shutdown_server()
 
 st.title("pptx_extractor — Web UI")
 st.caption("Run extract/recreate, filter JSON, and validate edits before recreating.")

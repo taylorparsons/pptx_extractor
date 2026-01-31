@@ -36,13 +36,15 @@ chmod +x run.sh
 
 ### Option C: launch the web UI
 
-If you prefer not to use the CLI, you can run a local Streamlit UI:
+If you prefer not to use the CLI, you can run a local Streamlit UI.  
+**New users should first make the script executable with `chmod`:**
 
 ```sh
+chmod +x run.sh
 ./run.sh ui
 ```
 
-This installs UI-only dependencies from `requirements-ui.txt` (first run) and starts a local server. Follow the printed URL (usually `http://localhost:8501`).
+This installs UI-only dependencies from `requirements-ui.txt` (first run) **and starts the Streamlit app**. Follow the printed URL (usually `http://localhost:8501`).
 
 #### Web UI quick guide
 
